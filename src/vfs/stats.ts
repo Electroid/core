@@ -118,8 +118,8 @@ export abstract class StatsCommon<T extends number | bigint> implements Node.Sta
 		return new Date(Number(this.atimeMs));
 	}
 
-	public set atime(value: Date) {
-		this.atimeMs = this._convert(value.getTime());
+	public set atime(value: Date | number) {
+		this.atimeMs = this._convert(value instanceof Date ? value.getTime() : value);
 	}
 
 	/**
@@ -131,8 +131,8 @@ export abstract class StatsCommon<T extends number | bigint> implements Node.Sta
 		return new Date(Number(this.mtimeMs));
 	}
 
-	public set mtime(value: Date) {
-		this.mtimeMs = this._convert(value.getTime());
+	public set mtime(value: Date | number) {
+		this.mtimeMs = this._convert(value instanceof Date ? value.getTime() : value);
 	}
 
 	/**
@@ -144,8 +144,8 @@ export abstract class StatsCommon<T extends number | bigint> implements Node.Sta
 		return new Date(Number(this.ctimeMs));
 	}
 
-	public set ctime(value: Date) {
-		this.ctimeMs = this._convert(value.getTime());
+	public set ctime(value: Date | number) {
+		this.ctimeMs = this._convert(value instanceof Date ? value.getTime() : value);
 	}
 
 	/**
@@ -157,8 +157,8 @@ export abstract class StatsCommon<T extends number | bigint> implements Node.Sta
 		return new Date(Number(this.birthtimeMs));
 	}
 
-	public set birthtime(value: Date) {
-		this.birthtimeMs = this._convert(value.getTime());
+	public set birthtime(value: Date | number) {
+		this.birthtimeMs = this._convert(value instanceof Date ? value.getTime() : value);
 	}
 
 	/**
