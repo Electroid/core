@@ -61,7 +61,7 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"lint": "eslint src tests",
-		"test": "bun zenfs-test --clean; bun zenfs-test -abcfp; tests/fetch/run.sh; bun zenfs-test --report",
+		"test": "npx zenfs-test --clean; npx zenfs-test -abcfp; tests/fetch/run.sh; npx zenfs-test --report",
 		"build": "bun tsc -p tsconfig.json",
 		"build:docs": "bun typedoc",
 		"dev": "bun run build -- --watch",
