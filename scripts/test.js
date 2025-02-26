@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 import { execSync } from 'node:child_process';
-import { existsSync, globSync, mkdirSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, rmSync } from 'node:fs';
 import { join, parse, basename } from 'node:path';
 import { parseArgs } from 'node:util';
+import { glob } from 'glob';
 
 const { values: options, positionals } = parseArgs({
 	options: {
@@ -106,7 +107,7 @@ if (options.auto) {
 	let sum = 0;
 
 	for (const pattern of ['**/tests/setup/*.ts', '**/tests/setup-*.ts']) {
-		const files = await globSync(pattern).filter(f => !f.includes('node_modules'));
+		const files = await glob(pattern, { ignore: '**/node_modules/**' });
 		sum += files.length;
 		positionals.push(...files);
 	}
