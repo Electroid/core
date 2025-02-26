@@ -24,25 +24,25 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v4
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
               with:
-                  node-version: 22
+                  bun-version: latest
 
             - name: Install dependencies
-              run: npm install
+              run: bun install
 
             - name: Create sub-checks
               run: npx zci init
 
             - name: Formatting
-              run: npx zci run format "npm run format:check"
+              run: npx zci run format "bun run format:check"
 
             - name: Build
-              run: npx zci run build "npm run build"
+              run: npx zci run build "bun run build"
 
             - name: Linting
-              run: npx zci run lint "npm run lint"
+              run: npx zci run lint "bun run lint"
 
             - name: 'Unit tests: common'
               run: npx zenfs-test -pfwC --common

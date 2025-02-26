@@ -1,17 +1,19 @@
 name: Release
+
 on:
+    workflow_dispatch:
     release:
         types: [created]
+
 jobs:
     ci:
-        name: CI Checks
+        name: Test
         uses: ./.github/workflows/ci.yaml
-    docs:
-        name: Docs
-        uses: ./.github/workflows/deploy-docs.yaml
-        needs: ci
+
     release:
-        name: Release
-        uses: ./.github/workflows/release-common.yaml
+        name: Publish
         needs: ci
+        uses: ./.github/workflows/release-common.yaml
+        with:
+            to-location: 'https://registry.npmjs.org/'
         secrets: inherit
