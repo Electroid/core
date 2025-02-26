@@ -4,7 +4,7 @@ import { execSync } from 'node:child_process';
 import { existsSync, mkdirSync, rmSync } from 'node:fs';
 import { join, parse, basename } from 'node:path';
 import { parseArgs } from 'node:util';
-import { glob } from 'glob';
+import { globSync } from 'glob';
 
 const { values: options, positionals } = parseArgs({
 	options: {
@@ -107,7 +107,7 @@ if (options.auto) {
 	let sum = 0;
 
 	for (const pattern of ['**/tests/setup/*.ts', '**/tests/setup-*.ts']) {
-		const files = await glob(pattern, { ignore: '**/node_modules/**' });
+		const files = globSync(pattern, { ignore: '**/node_modules/**' });
 		sum += files.length;
 		positionals.push(...files);
 	}
@@ -167,19 +167,34 @@ if (options.common) {
 	!options.quiet && console.log('Running common tests...');
 	const { pass, fail } = await status('Common tests');
 	try {
-		execSync(
-			`tsx ${options.inspect ? 'inspect' : ''} ${options.force ? '--test-force-exit' : ''} --test --experimental-test-coverage 'tests/*.test.ts' 'tests/**/!(fs)/*.test.ts'`,
-			{
-				stdio: ['ignore', options.verbose ? 'inherit' : 'ignore', 'inherit'],
-			}
-		);
-		await pass();
-	} catch {
+		// Get the actual test files using globSync to verify they exist
+		const commonTestFiles = globSync(['tests/*.test.ts', 'tests/**/!(fs)/*.test.ts']);
+		if (commonTestFiles.length === 0) {
+			console.error('Could not find test files matching the patterns: tests/*.test.ts, tests/**/!(fs)/*.test.ts');
+			await fail();
+		} else {
+			// Convert the array to space-separated string for the command
+			const testFilesString = commonTestFiles.map(file => `'${file}'`).join(' ');
+			execSync(
+				`tsx ${options.inspect ? 'inspect' : ''} ${options.force ? '--test-force-exit' : ''} --test --experimental-test-coverage ${testFilesString}`,
+				{
+					stdio: ['ignore', options.verbose ? 'inherit' : 'ignore', 'inherit'],
+				}
+			);
+			await pass();
+		}
+	} catch (error) {
+		console.error('Error running common tests:', error.message);
 		await fail();
 	}
 }
 
 const testsGlob = join(import.meta.dirname, `../tests/fs/${options.test || '*'}.test.ts`);
+// Verify that the test files exist
+const fsTestFiles = globSync(testsGlob);
+if (fsTestFiles.length === 0 && !options.quiet) {
+	console.warn(`Note: No test files found matching the pattern: ${testsGlob}`);
+}
 
 for (const setupFile of positionals) {
 	if (!existsSync(setupFile)) {
