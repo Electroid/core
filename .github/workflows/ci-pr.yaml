@@ -20,46 +20,46 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v4
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
               with:
-                  node-version: 22
+                  bun-version: latest
 
             - name: Install dependencies
-              run: npm install
+              run: bun install
 
             - name: Formatting
-              run: npm run format:check
+              run: bun run format:check
 
             - name: Build
-              run: npm run build
+              run: bun run build
 
             - name: Linting
-              run: npm run lint
+              run: bun run lint
 
             - name: 'Unit tests: common'
-              run: npx zenfs-test -pfw --common
+              run: bun zenfs-test -pfw --common
 
             - name: 'Unit tests: InMemory'
-              run: npx zenfs-test -pfw tests/setup/memory.ts
+              run: bun zenfs-test -pfw tests/setup/memory.ts
 
             - name: 'Unit tests: contexts'
-              run: npx zenfs-test -pfw tests/setup/context.ts
+              run: bun zenfs-test -pfw tests/setup/context.ts
 
             - name: 'Unit tests: Copy-on-Write'
-              run: npx zenfs-test -pfw tests/setup/cow.ts
+              run: bun zenfs-test -pfw tests/setup/cow.ts
 
             - name: 'Unit tests: Index'
-              run: npx zenfs-test -pfw tests/setup/index.ts
+              run: bun zenfs-test -pfw tests/setup/index.ts
 
             - name: 'Unit tests: Port'
-              run: npx zenfs-test -pfw tests/setup/port.ts
+              run: bun zenfs-test -pfw tests/setup/port.ts
 
             - name: 'Unit tests: SingleBuffer'
-              run: npx zenfs-test -pfw tests/setup/single-buffer.ts
+              run: bun zenfs-test -pfw tests/setup/single-buffer.ts
 
             - name: 'Unit tests: Fetch'
               run: tests/fetch/run.sh -w
 
             - name: Report coverage
-              run: npx zenfs-test --report
+              run: bun zenfs-test --report

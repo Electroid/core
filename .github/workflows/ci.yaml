@@ -24,53 +24,53 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v4
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
               with:
-                  node-version: 22
+                  bun-version: latest
 
             - name: Install dependencies
-              run: npm install
+              run: bun install
 
             - name: Create sub-checks
-              run: npx zci init
+              run: bun zci init
 
             - name: Formatting
-              run: npx zci run format "npm run format:check"
+              run: bun zci run format "bun run format:check"
 
             - name: Build
-              run: npx zci run build "npm run build"
+              run: bun zci run build "bun run build"
 
             - name: Linting
-              run: npx zci run lint "npm run lint"
+              run: bun zci run lint "bun run lint"
 
             - name: 'Unit tests: common'
-              run: npx zenfs-test -pfwC --common
+              run: bun zenfs-test -pfwC --common
 
             - name: 'Unit tests: InMemory'
-              run: npx zenfs-test -pfwC tests/setup/memory.ts
+              run: bun zenfs-test -pfwC tests/setup/memory.ts
 
             - name: 'Unit tests: Copy-On-Write'
-              run: npx zenfs-test -pfwC tests/setup/cow.ts
+              run: bun zenfs-test -pfwC tests/setup/cow.ts
 
             - name: 'Unit tests: contexts'
-              run: npx zenfs-test -pfwC tests/setup/context.ts
+              run: bun zenfs-test -pfwC tests/setup/context.ts
 
             - name: 'Unit tests: Index'
-              run: npx zenfs-test -pfwC tests/setup/index.ts
+              run: bun zenfs-test -pfwC tests/setup/index.ts
 
             - name: 'Unit tests: Port'
-              run: npx zenfs-test -pfwC tests/setup/port.ts
+              run: bun zenfs-test -pfwC tests/setup/port.ts
 
             - name: 'Unit tests: SingleBuffer'
-              run: npx zenfs-test -pfwC tests/setup/single-buffer.ts
+              run: bun zenfs-test -pfwC tests/setup/single-buffer.ts
 
             - name: 'Unit tests: Fetch'
               run: tests/fetch/run.sh -wC
 
             - name: Report coverage
-              run: npx zenfs-test --report
+              run: bun zenfs-test --report
 
             - name: Cleanup sub-checks
               if: always()
-              run: npx zci cleanup
+              run: bun zci cleanup

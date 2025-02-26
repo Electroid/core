@@ -40,7 +40,8 @@
 		"url": "https://github.com/zen-fs/core/issues"
 	},
 	"engines": {
-		"node": ">= 18"
+		"node": ">= 18",
+		"bun": ">= 1.0.0"
 	},
 	"exports": {
 		".": "./dist/index.js",
@@ -60,11 +61,11 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"lint": "eslint src tests",
-		"test": "npx zenfs-test --clean; npx zenfs-test -abcfp; tests/fetch/run.sh; npx zenfs-test --report",
-		"build": "tsc -p tsconfig.json",
-		"build:docs": "typedoc",
-		"dev": "npm run build -- --watch",
-		"prepublishOnly": "npm run build"
+		"test": "bun zenfs-test --clean; bun zenfs-test -abcfp; tests/fetch/run.sh; bun zenfs-test --report",
+		"build": "bun tsc -p tsconfig.json",
+		"build:docs": "bun typedoc",
+		"dev": "bun run build -- --watch",
+		"prepublishOnly": "bun run build"
 	},
 	"dependencies": {
 		"@types/node": "^22.10.1",

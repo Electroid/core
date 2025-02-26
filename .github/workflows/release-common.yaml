@@ -1,32 +1,40 @@
-name: Release
+name: Common Release Step
 on:
     workflow_call:
-        secrets:
-            npm_token:
+        inputs:
+            to-location:
+                type: string
                 required: true
+
 jobs:
     release:
-        name: Publish
+        name: Publish NPM Package
         runs-on: ubuntu-latest
         permissions:
+            contents: read
             id-token: write
         steps:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Setup npm authentication
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
+              with:
+                  bun-version: latest
+
+            - name: Install dependencies
+              run: bun install
+
+            - name: Build
+              run: bun run build
+
+            - name: Setup Node.js for publish
               uses: actions/setup-node@v4
               with:
                   node-version: 22
-                  registry-url: https://registry.npmjs.org/
-
-            - name: Install dependencies
-              run: npm install
-
-            - name: Build
-              run: npm run build
+                  registry-url: ${{ inputs.to-location }}
 
             - name: Publish
-              run: npm publish --access=public --provenance
+              run: npm publish
               env:
-                  NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
